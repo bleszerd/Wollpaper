@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <ripple android:color="@color/light_niagara">
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/niagara" />
+                    <corners android:radius="360dp" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+</selector>
