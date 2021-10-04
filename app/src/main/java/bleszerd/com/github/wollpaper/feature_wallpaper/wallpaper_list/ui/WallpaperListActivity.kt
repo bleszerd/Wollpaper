@@ -50,7 +50,7 @@ class WallpaperListActivity : AppCompatActivity() {
     private fun setupViewReferences() {
         recyclerWallpaper = binding.recyclerWallpaperList
         searchInput = binding.editTextInputSearch
-        nestedScrollView = binding.root
+        nestedScrollView = binding.nestedScrollWallpaperList
     }
 
     private fun setupRecyclerWallpaper() {
@@ -68,6 +68,10 @@ class WallpaperListActivity : AppCompatActivity() {
     private fun setupViewListeners() {
         binding.frameLayoutButtonSearch.setOnClickListener {
             handleSearchAction()
+        }
+
+        binding.fabScrollToTop.setOnClickListener {
+            nestedScrollView.smoothScrollTo(0, 0)
         }
     }
 
