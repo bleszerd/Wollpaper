@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/wallpaperListFragment">
+
+    <fragment
+        android:id="@+id/wallpaperListFragment"
+        android:name="bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui.WallpaperListFragment"
+        android:label="WallpaperListFragment" >
+        <action
+            android:id="@+id/action_wallpaperListFragment_to_wallpaperDetailsFragment"
+            app:destination="@id/wallpaperDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/wallpaperDetailsFragment"
+        android:name="bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_details.ui.WallpaperDetailsFragment"
+        android:label="WallpaperDetailsFragment" />
+</navigation>
