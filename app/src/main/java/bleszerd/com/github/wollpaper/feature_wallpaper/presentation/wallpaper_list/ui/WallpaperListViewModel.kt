@@ -1,4 +1,4 @@
-package bleszerd.com.github.wollpaper.feature_wallpaper.wallpaper_list.ui
+package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -53,6 +53,7 @@ class WallpaperListViewModel @Inject constructor(
                         println(result.message)
                     }
                     is Resource.Loading -> {
+
                     }
                 }
             }

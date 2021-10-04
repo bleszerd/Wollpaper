@@ -1,4 +1,4 @@
-package bleszerd.com.github.wollpaper.feature_wallpaper.wallpaper_list.ui
+package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -11,8 +11,6 @@ import bleszerd.com.github.wollpaper.R
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.transform.RoundedCornersTransformation
-import coil.transform.Transformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

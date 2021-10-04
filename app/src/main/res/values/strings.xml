@@ -2,4 +2,7 @@
     <string name="app_name">WollPaper</string>
     <string name="with">with</string>
     <string name="keyword">Keyword</string>
+    <string name="photo_by">Photo by</string>
+    <string name="use_photo">Use photo</string>
+    <string name="open_on_pexels">Open on Pexels</string>
 </resources>

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WollPaper">
         <activity
-            android:name="bleszerd.com.github.wollpaper.feature_wallpaper.wallpaper_list.ui.WallpaperListActivity"
+            android:name="bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui.WallpaperListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".feature_wallpaper.presentation.wallpaper_details.WallpaperDetailsActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -85,7 +85,7 @@
 
                 <FrameLayout
                     android:id="@+id/frameLayoutButtonSearch"
-                    style="@style/Button"
+                    style="@style/Button.Pie"
                     android:layout_width="110dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"

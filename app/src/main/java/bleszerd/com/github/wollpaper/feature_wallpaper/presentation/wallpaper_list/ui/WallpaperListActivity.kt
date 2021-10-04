@@ -1,4 +1,4 @@
-package bleszerd.com.github.wollpaper.feature_wallpaper.wallpaper_list.ui
+package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui
 
 import android.os.Bundle
 import android.view.View
