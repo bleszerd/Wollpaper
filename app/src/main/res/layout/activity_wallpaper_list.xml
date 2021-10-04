@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <View
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/guide"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/recyclerWallpaperList"
+            android:layout_width="wrap_content"
+            android:visibility="invisible"
+            android:layout_height="0dp" />
+
         <TextView
             android:id="@+id/textAppName"
             style="@style/Text.Title"
@@ -90,10 +99,8 @@
             app:layout_constraintTop_toBottomOf="@id/frameLayoutSearchBarContainer"
             android:id="@+id/recyclerWallpaperList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:itemCount="20"
+            android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
-            android:nestedScrollingEnabled="false"
             tools:listitem="@layout/wallpaper_card_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

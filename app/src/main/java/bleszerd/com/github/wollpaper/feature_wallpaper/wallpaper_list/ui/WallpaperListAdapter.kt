@@ -15,8 +15,6 @@ class WallpaperListAdapter(
 ) : RecyclerView.Adapter<WallpaperListAdapter.WallpaperListViewHolder>() {
 
     private val _photoList = mutableListOf<Photo>()
-//    private val glideInstance = Glide.with(context)
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WallpaperListViewHolder {
         return WallpaperListViewHolder(
@@ -46,7 +44,7 @@ class WallpaperListAdapter(
     }
 
     fun insertItems(photos: List<Photo>) {
-        var startUpdateIndexAt = _photoList.indices.last
+        var startUpdateIndexAt = _photoList.size
         if (startUpdateIndexAt == -1) startUpdateIndexAt = 0
         _photoList.addAll(photos)
         notifyItemRangeInserted(startUpdateIndexAt, photos.size)
