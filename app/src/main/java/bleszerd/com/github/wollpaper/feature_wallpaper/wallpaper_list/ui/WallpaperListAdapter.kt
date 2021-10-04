@@ -5,16 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import bleszerd.com.github.wollpaper.R
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
-import coil.load
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.transform.RoundedCornersTransformation
+import coil.transform.Transformation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class WallpaperListAdapter(
     private val context: Activity
 ) : RecyclerView.Adapter<WallpaperListAdapter.WallpaperListViewHolder>() {
 
     private val _photoList = mutableListOf<Photo>()
+    private val imageRequest = ImageLoader(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WallpaperListViewHolder {
         return WallpaperListViewHolder(
@@ -33,13 +41,23 @@ class WallpaperListAdapter(
     inner class WallpaperListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(photo: Photo) {
             //Find view references
-            val wallpaperImageItem: ImageView = itemView.findViewById(R.id.imageWallpaperItem)
+            val wallpaperProgressIndicator: ProgressBar =
+                itemView.findViewById(R.id.progressWallpaperItemPlaceholder)
+            val wallpaperImageItem: ImageView =
+                itemView.findViewById(R.id.imageWallpaperItemPlaceholder)
 
             //Populate references with data
-            wallpaperImageItem
-                .load(photo.imageUrl) {
-                    crossfade(true)
-                }
+            val request = ImageRequest.Builder(context)
+                .data(photo.imageUrl)
+                .crossfade(true)
+                .target {
+                    wallpaperImageItem.setImageDrawable(it)
+                    wallpaperProgressIndicator.visibility = View.GONE
+                }.build()
+
+            CoroutineScope(Dispatchers.Main).launch {
+                imageRequest.execute(request)
+            }
         }
     }
 
@@ -48,5 +66,10 @@ class WallpaperListAdapter(
         if (startUpdateIndexAt == -1) startUpdateIndexAt = 0
         _photoList.addAll(photos)
         notifyItemRangeInserted(startUpdateIndexAt, photos.size)
+    }
+
+    fun clearAllData() {
+        _photoList.clear()
+        notifyDataSetChanged()
     }
 }

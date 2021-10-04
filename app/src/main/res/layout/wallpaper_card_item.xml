@@ -3,15 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_weight="1">
+    android:layout_height="360dp"
+    android:layout_margin="4dp"
+    android:layout_weight="1"
+    android:background="@drawable/wallpaper_card_item_background"
+    app:layout_constraintDimensionRatio="9:18">
 
-    <ImageView
-        android:id="@+id/imageWallpaperItem"
+    <ProgressBar
+        android:id="@+id/progressWallpaperItemPlaceholder"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:elevation="8dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/niagara"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageWallpaperItemPlaceholder"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="9:16"
+        app:shapeAppearanceOverlay="@style/RoundedImage"
         tools:src="@tools:sample/backgrounds/scenic" />
 
 </FrameLayout>

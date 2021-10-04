@@ -1,5 +1,6 @@
 package bleszerd.com.github.wollpaper.feature_wallpaper.use_case
 
+import bleszerd.com.github.wollpaper.core.Constants.DEFAULT_SEARCH_KEYWORD
 import bleszerd.com.github.wollpaper.core.Resource
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.PhotoList
@@ -10,19 +11,47 @@ import javax.inject.Inject
 class SearchWallpapersByKeyword @Inject constructor(
     private val repository: WallpaperRepository
 ) {
+    private var lastSearchedTerm = DEFAULT_SEARCH_KEYWORD
+    private var currentPage = 0
+    private var isLoading = false
+    private var totalResults = 0
+    private var endReached = false
+
     suspend operator fun invoke(
-        keyword: String,
-        page: Int,
+        keyword: String? = DEFAULT_SEARCH_KEYWORD,
         limit: Int,
-        onResult: (Resource<PhotoList>) -> Unit
+        page: Int = 1,
+        listener: SearchWallpaperByKeywordListener? = null,
+        onEndReached: () -> Unit = {},
+        onResult: (Resource<PhotoList>) -> Unit = {}
     ) {
+        if (isLoading)
+            return
+
+        val searchTerm = keyword?: lastSearchedTerm
+
+        if (lastSearchedTerm == searchTerm){
+            if (endReached){
+                onEndReached()
+                println("reached end")
+                return
+            }
+            currentPage += 1
+        }
+        else {
+            currentPage = 1
+            lastSearchedTerm = searchTerm
+            listener?.onNewKeywordSearch(searchTerm)
+        }
+
         try {
             val response = repository.searchPaginatedWallpapersByKeyword(
-                keyword,
-                page,
+                searchTerm,
+                currentPage,
                 limit
             )
-            val totalResults = response.data?.totalResults!!
+            totalResults = response.data?.totalResults!!
+            endReached = currentPage * limit > totalResults
             val parsedPhotos = parsePhotoListResponseToPhotoListModel(response.data)
 
             onResult(
@@ -36,6 +65,7 @@ class SearchWallpapersByKeyword @Inject constructor(
             )
         }
 
+        isLoading = false
     }
 
     private fun parsePhotoListResponseToPhotoListModel(data: PhotoListResponse): List<Photo> {
@@ -59,4 +89,8 @@ class SearchWallpapersByKeyword @Inject constructor(
 
         return parsedData
     }
+}
+
+interface SearchWallpaperByKeywordListener {
+    fun onNewKeywordSearch(newKeyword: String){}
 }

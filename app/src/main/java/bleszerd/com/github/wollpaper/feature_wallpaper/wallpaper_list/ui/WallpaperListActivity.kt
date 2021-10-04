@@ -1,6 +1,7 @@
 package bleszerd.com.github.wollpaper.feature_wallpaper.wallpaper_list.ui
 
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -23,14 +24,16 @@ class WallpaperListActivity : AppCompatActivity() {
 
     private val viewModel: WallpaperListViewModel by viewModels()
 
+    //Listeners and callbacks
     private val wallpaperListScrollListener =
         NestedScrollView.OnScrollChangeListener { nestedScrollView, scrollX, scrollY, oldScrollX, oldScrollY ->
             val childHeight = nestedScrollView.getChildAt(0).measuredHeight
             val parentHeight = nestedScrollView.measuredHeight
             val maxScrollValue = (parentHeight - childHeight) * -1
 
-            if (maxScrollValue == scrollY)
+            if (maxScrollValue == scrollY){
                 viewModel.searchPaginatedWallpaperByKeyword()
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +66,7 @@ class WallpaperListActivity : AppCompatActivity() {
     }
 
     private fun setupViewListeners() {
-        binding.frameLayoutSearchBarContainer.setOnClickListener {
+        binding.frameLayoutButtonSearch.setOnClickListener {
             handleSearchAction()
         }
     }
@@ -72,7 +75,18 @@ class WallpaperListActivity : AppCompatActivity() {
         viewModel.wallpaperList.observe(this, { photoList ->
             if (photoList == null) return@observe
 
+            if (photoList.size == 0){
+                wallpaperAdapter.clearAllData()
+                return@observe
+            }
+
             wallpaperAdapter.insertItems(photoList)
+        })
+
+
+        viewModel.hasMoreWallpapers.observe(this, { hasMore ->
+            if(!hasMore)
+                binding.progressWallpaperListHasMoreWallpaper.visibility = View.GONE
         })
     }
 

@@ -11,5 +11,6 @@
     <color name="niagara">#FF04A484</color>
     <color name="light_niagara">#FF59BFA9</color>
     <color name="road">#FF272727</color>
+    <color name="road_alpha">#D8272727</color>
     <color name="pale_road">#494949</color>
 </resources>

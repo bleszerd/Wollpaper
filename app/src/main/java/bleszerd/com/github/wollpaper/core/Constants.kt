@@ -7,4 +7,5 @@ object Constants {
     const val API_KEY = BuildConfig.API_KEY
     const val SEARCH_QUERY_ORIENTATION = "portrait"
     const val RESULTS_LIMIT_PER_PAGE = 80
+    const val DEFAULT_SEARCH_KEYWORD = "beach"
 }

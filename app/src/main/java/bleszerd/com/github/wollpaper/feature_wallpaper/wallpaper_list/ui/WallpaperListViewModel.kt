@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import bleszerd.com.github.wollpaper.core.Constants.RESULTS_LIMIT_PER_PAGE
 import bleszerd.com.github.wollpaper.core.Resource
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
+import bleszerd.com.github.wollpaper.feature_wallpaper.use_case.SearchWallpaperByKeywordListener
 import bleszerd.com.github.wollpaper.feature_wallpaper.use_case.util.NestedUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,42 +18,43 @@ class WallpaperListViewModel @Inject constructor(
 ) : ViewModel() {
 
     val wallpaperList = MutableLiveData<MutableList<Photo>>(null)
-    private var lastSearchedTerm = "beach"
-    private var currentPage = 1
-    private var isLoading = false
+    val hasMoreWallpapers = MutableLiveData<Boolean>(true)
+
+    //Callbacks
+    private val endIsReachedCallback = {
+        hasMoreWallpapers.postValue(false)
+    }
+
+    //Listeners
+    private val searchListener = object : SearchWallpaperByKeywordListener {
+        override fun onNewKeywordSearch(newKeyword: String) {
+            wallpaperList.postValue(mutableListOf())
+        }
+    }
 
     init {
         searchPaginatedWallpaperByKeyword()
     }
 
-    fun searchPaginatedWallpaperByKeyword(keyword: String = lastSearchedTerm) {
-        if (isLoading)
-            return
-
+    fun searchPaginatedWallpaperByKeyword(keyword: String? = null) {
         viewModelScope.launch {
-            //Set loading to true
-            isLoading = true
-
             nestedUseCases.searchWallpapersByKeyword(
                 keyword,
-                currentPage,
-                RESULTS_LIMIT_PER_PAGE
+                RESULTS_LIMIT_PER_PAGE,
+                onEndReached = endIsReachedCallback,
+                listener = searchListener,
             ) { result ->
                 when (result) {
                     is Resource.Success -> {
                         //Update list
                         wallpaperList.postValue(result.data?.photos!!.toMutableList())
-                        //Update current page
-                        currentPage += 1
                     }
                     is Resource.Error -> {
                         println(result.message)
                     }
-                    is Resource.Loading -> {}
+                    is Resource.Loading -> {
+                    }
                 }
-
-                //Set loading to false
-                isLoading = false
             }
         }
     }

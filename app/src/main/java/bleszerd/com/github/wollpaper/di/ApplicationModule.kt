@@ -7,8 +7,6 @@ import bleszerd.com.github.wollpaper.feature_wallpaper.data.remote.WallpaperRepo
 import bleszerd.com.github.wollpaper.feature_wallpaper.repository.WallpaperRepositoryImpl
 import bleszerd.com.github.wollpaper.feature_wallpaper.use_case.SearchWallpapersByKeyword
 import bleszerd.com.github.wollpaper.feature_wallpaper.use_case.util.NestedUseCases
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,10 +43,4 @@ object ApplicationModule {
     ) = NestedUseCases(
         searchWallpapersByKeyword = SearchWallpapersByKeyword(repository)
     )
-
-    @Provides
-    @Singleton
-    fun provideImageLoader(
-        @ApplicationContext context: Context
-    ): RequestManager = Glide.with(context)
 }
