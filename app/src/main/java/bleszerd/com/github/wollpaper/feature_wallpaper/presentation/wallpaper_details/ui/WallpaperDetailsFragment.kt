@@ -1,5 +1,6 @@
 package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_details.ui
 
+import android.app.AlertDialog
 import android.app.WallpaperManager
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import bleszerd.com.github.wollpaper.R
 import bleszerd.com.github.wollpaper.databinding.FragmentWallpaperDetailsBinding
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import coil.ImageLoader
@@ -66,7 +68,7 @@ class WallpaperDetailsFragment : Fragment() {
 
     private fun setupViewListeners() {
         binding.wallpaperDetailsButtonUsePhoto.setOnClickListener {
-            setDeviceWallpaper()
+            handleSetWallpaperClickAction()
         }
 
         binding.wallpaperDetailsButtonOpenPexels.setOnClickListener {
@@ -115,6 +117,20 @@ class WallpaperDetailsFragment : Fragment() {
         binding.wallpaperDetailsAuthorName.text = photo.photographer
     }
 
+    private fun handleSetWallpaperClickAction() {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.confirm_action)
+            .setMessage(R.string.confirm_photo_as_wallpaper_lock_screen)
+            .setPositiveButton(R.string.confirm) { dialog, id ->
+                setDeviceWallpaper()
+                Toast.makeText(requireContext(), R.string.all_done_smile, Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(R.string.cancel) { _, _ -> }
+            .create()
+
+        dialog.show()
+    }
+
     private fun setDeviceWallpaper() {
         val wallpaperManager = WallpaperManager.getInstance(requireContext())
 
@@ -122,7 +138,6 @@ class WallpaperDetailsFragment : Fragment() {
             val imageResource = viewModel.photoResource
             if (imageResource != null) {
                 wallpaperManager.setBitmap(imageResource)
-                Toast.makeText(requireContext(), "All done! :)", Toast.LENGTH_SHORT).show()
             }
 
         } catch (e: Exception) {
