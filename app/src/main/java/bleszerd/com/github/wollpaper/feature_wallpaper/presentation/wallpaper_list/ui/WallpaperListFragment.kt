@@ -41,8 +41,7 @@ class WallpaperListFragment : Fragment() {
 
     private val wallpaperListListener = object : WallpaperListAdapter.WallpaperListAdapterListener {
         override fun onWallpaperSelected(wallpaper: Photo) {
-            val action =
-                WallpaperListFragmentDirections
+            val action = WallpaperListFragmentDirections
                     .actionWallpaperListFragmentToWallpaperDetailsFragment(wallpaper.id)
             findNavController().navigate(action)
         }

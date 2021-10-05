@@ -1,6 +1,5 @@
 package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_details.ui
 
-import android.app.AlertDialog
 import android.app.WallpaperManager
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -15,6 +14,8 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import bleszerd.com.github.wollpaper.R
+import bleszerd.com.github.wollpaper.core.components.confirm_dialog.builder.ConfirmDialogBuilder
+import bleszerd.com.github.wollpaper.core.components.confirm_dialog.ui.ConfirmDialog
 import bleszerd.com.github.wollpaper.databinding.FragmentWallpaperDetailsBinding
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import coil.ImageLoader
@@ -118,31 +119,21 @@ class WallpaperDetailsFragment : Fragment() {
     }
 
     private fun handleSetWallpaperClickAction() {
-        val dialog = AlertDialog.Builder(requireContext())
+        val dialog = ConfirmDialogBuilder(requireContext())
             .setTitle(R.string.confirm_action)
-            .setMessage(R.string.confirm_photo_as_wallpaper_lock_screen)
-            .setPositiveButton(R.string.confirm) { dialog, id ->
+            .setText(R.string.confirm_photo_as_wallpaper_lock_screen)
+            .setPositiveButton(R.string.confirm){
+                Toast.makeText(requireContext(), R.string.all_done_smile, Toast.LENGTH_LONG).show()
                 setDeviceWallpaper()
-                Toast.makeText(requireContext(), R.string.all_done_smile, Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton(R.string.cancel) { _, _ -> }
-            .create()
+            .setNegativeButton(R.string.cancel) { }
+            .build()
 
-        dialog.show()
+        dialog.show(parentFragmentManager, dialog.tag)
     }
 
     private fun setDeviceWallpaper() {
-        val wallpaperManager = WallpaperManager.getInstance(requireContext())
-
-        try {
-            val imageResource = viewModel.photoResource
-            if (imageResource != null) {
-                wallpaperManager.setBitmap(imageResource)
-            }
-
-        } catch (e: Exception) {
-            println(e.message)
-        }
+       CoroutineScope(Dispatchers.Main)
     }
 
     private fun openWallpaperOnPexels() {
