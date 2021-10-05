@@ -15,6 +15,8 @@ class GetWallpaperById @Inject constructor(
     ){
         try {
             val response = repository.getWallpaperById(id)
+
+            //Parse photo result to photo model
             val parsedPhoto = parsePhotoResponseToPhoto(response.data!!)
             onResult(
                 Resource.Success(parsedPhoto)

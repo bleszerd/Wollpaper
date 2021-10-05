@@ -11,47 +11,61 @@ import javax.inject.Inject
 class SearchWallpapersByKeyword @Inject constructor(
     private val repository: WallpaperRepository
 ) {
-    private var lastSearchedTerm = DEFAULT_SEARCH_KEYWORD
+    private var lastSearchedKeyword = DEFAULT_SEARCH_KEYWORD
     private var currentPage = 0
-    private var isLoading = false
     private var totalResults = 0
+    private var isLoading = false
     private var endReached = false
 
     suspend operator fun invoke(
         keyword: String? = DEFAULT_SEARCH_KEYWORD,
         limit: Int,
-        page: Int = 1,
+        page: Int = -1,
         listener: SearchWallpaperByKeywordListener? = null,
         onEndReached: () -> Unit = {},
         onResult: (Resource<PhotoList>) -> Unit = {}
     ) {
+        //Already loading
         if (isLoading)
             return
 
-        val searchTerm = keyword?: lastSearchedTerm
+        //Update last search keyword
+        val searchKeyword = keyword?: lastSearchedKeyword
 
-        if (lastSearchedTerm == searchTerm){
+        //If search keyword is the same as previous update page count
+        if (lastSearchedKeyword == searchKeyword){
+
+            //Check if end of list is reached
             if (endReached){
                 onEndReached()
-                println("reached end")
                 return
             }
+
             currentPage += 1
         }
         else {
+            //Keyword is different, reset page count and update lastSearchKeyword
             currentPage = 1
-            lastSearchedTerm = searchTerm
-            listener?.onNewKeywordSearch(searchTerm)
+            lastSearchedKeyword = searchKeyword
+
+            //Trigger new keyword search callback
+            listener?.onNewKeywordSearch(searchKeyword)
         }
 
         try {
             val response = repository.searchPaginatedWallpapersByKeyword(
-                searchTerm,
+                searchKeyword,
                 currentPage,
                 limit
             )
+
+            //Update total results
             totalResults = response.data?.totalResults!!
+
+            //If current page * limit is greater than total results the end has reached
             endReached = currentPage * limit > totalResults
+
+            //Parse photo list response to photo list data model
             val parsedPhotos = parsePhotoListResponseToPhotoListModel(response.data)
 
             onResult(
@@ -65,6 +79,7 @@ class SearchWallpapersByKeyword @Inject constructor(
             )
         }
 
+        //Request is done
         isLoading = false
     }
 
