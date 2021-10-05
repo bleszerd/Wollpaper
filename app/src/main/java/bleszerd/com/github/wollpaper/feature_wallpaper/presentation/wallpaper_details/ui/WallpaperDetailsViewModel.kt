@@ -1,5 +1,8 @@
 package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_details.ui
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,10 +23,15 @@ class WallpaperDetailsViewModel @Inject constructor(
     val photoData: LiveData<Photo>
         get() = _photoData
 
+    private var _photoResource: Bitmap? = null
+    var photoResource: Bitmap? = null
+        private set
+        get() = _photoResource
+
     fun getWallpaperById(photoId: String) {
         viewModelScope.launch {
             nestedWallpaperUseCases.getWallpaperById(photoId) { result ->
-                when(result){
+                when (result) {
                     is Resource.Success -> {
                         _photoData.postValue(result.data!!)
                     }
@@ -32,9 +40,16 @@ class WallpaperDetailsViewModel @Inject constructor(
                         println(result.message)
                     }
 
-                    is Resource.Loading -> { }
+                    is Resource.Loading -> {
+                    }
                 }
             }
+        }
+    }
+
+    fun updatePhotoResource(drawable: Drawable) {
+        if (drawable is BitmapDrawable) {
+            _photoResource = (drawable as BitmapDrawable).bitmap
         }
     }
 

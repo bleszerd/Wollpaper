@@ -1,18 +1,21 @@
 package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_details.ui
 
+import android.app.WallpaperManager
+import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import bleszerd.com.github.wollpaper.databinding.FragmentWallpaperDetailsBinding
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import coil.ImageLoader
-import coil.load
 import coil.request.ImageRequest
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -27,8 +30,8 @@ class WallpaperDetailsFragment : Fragment() {
     private lateinit var backgroundImage: ImageView
     private lateinit var progressIcon: ProgressBar
     private lateinit var photoId: String
-    private lateinit var authorName: TextView
     private lateinit var imageRequest: ImageLoader
+    private lateinit var photoDrawable: Drawable
 
     private val viewModel: WallpaperDetailsViewModel by viewModels()
 
@@ -46,6 +49,7 @@ class WallpaperDetailsFragment : Fragment() {
 
         setupPhotoRequest()
         setupViewReferences()
+        setupViewListeners()
         getArgumentsFromNav()
         populateViewData(photoId)
         setupObservers()
@@ -58,6 +62,16 @@ class WallpaperDetailsFragment : Fragment() {
     private fun setupViewReferences() {
         backgroundImage = binding.wallpaperDetailsBackgroundImage
         progressIcon = binding.wallpaperDetailsProgress
+    }
+
+    private fun setupViewListeners() {
+        binding.wallpaperDetailsButtonUsePhoto.setOnClickListener {
+            setDeviceWallpaper()
+        }
+
+        binding.wallpaperDetailsButtonOpenPexels.setOnClickListener {
+            openWallpaperOnPexels()
+        }
     }
 
     private fun getArgumentsFromNav() {
@@ -87,6 +101,8 @@ class WallpaperDetailsFragment : Fragment() {
             .target {
                 backgroundImage.setImageDrawable(it)
                 progressIcon.visibility = View.GONE
+                photoDrawable = it
+                viewModel.updatePhotoResource(it)
             }
             .build()
 
@@ -97,5 +113,28 @@ class WallpaperDetailsFragment : Fragment() {
 
         //Update texts
         binding.wallpaperDetailsAuthorName.text = photo.photographer
+    }
+
+    private fun setDeviceWallpaper() {
+        val wallpaperManager = WallpaperManager.getInstance(requireContext())
+
+        try {
+            val imageResource = viewModel.photoResource
+            if (imageResource != null) {
+                wallpaperManager.setBitmap(imageResource)
+                Toast.makeText(requireContext(), "All done! :)", Toast.LENGTH_SHORT).show()
+            }
+
+        } catch (e: Exception) {
+            println(e.message)
+        }
+    }
+
+    private fun openWallpaperOnPexels() {
+        val photo = viewModel.photoData.value
+        if (photo != null) {
+            val i = Intent(Intent.ACTION_VIEW, photo.pexelsUrl.toUri())
+            startActivity(i)
+        }
     }
 }
