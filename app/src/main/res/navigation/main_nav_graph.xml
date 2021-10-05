@@ -7,13 +7,20 @@
     <fragment
         android:id="@+id/wallpaperListFragment"
         android:name="bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui.WallpaperListFragment"
-        android:label="WallpaperListFragment" >
+        android:label="WallpaperListFragment">
         <action
             android:id="@+id/action_wallpaperListFragment_to_wallpaperDetailsFragment"
             app:destination="@id/wallpaperDetailsFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/wallpaperDetailsFragment"
         android:name="bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_details.ui.WallpaperDetailsFragment"
-        android:label="WallpaperDetailsFragment" />
+        android:label="WallpaperDetailsFragment">
+        <argument
+            android:name="photoId"
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
+
 </navigation>

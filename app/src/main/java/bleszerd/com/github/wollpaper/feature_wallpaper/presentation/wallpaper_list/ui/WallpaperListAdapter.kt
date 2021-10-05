@@ -19,6 +19,7 @@ class WallpaperListAdapter(
     private val context: Activity
 ) : RecyclerView.Adapter<WallpaperListAdapter.WallpaperListViewHolder>() {
 
+    private lateinit var adapterListener: WallpaperListAdapterListener
     private val _photoList = mutableListOf<Photo>()
     private val imageRequest = ImageLoader(context)
 
@@ -56,7 +57,17 @@ class WallpaperListAdapter(
             CoroutineScope(Dispatchers.Main).launch {
                 imageRequest.execute(request)
             }
+
+            //Set listeners
+            if (::adapterListener.isInitialized)
+                itemView.setOnClickListener {
+                    adapterListener.onWallpaperSelected(photo)
+                }
         }
+    }
+
+    fun setListener(listener: WallpaperListAdapterListener) {
+        adapterListener = listener
     }
 
     fun insertItems(photos: List<Photo>) {
@@ -69,5 +80,9 @@ class WallpaperListAdapter(
     fun clearAllData() {
         _photoList.clear()
         notifyDataSetChanged()
+    }
+
+    interface WallpaperListAdapterListener {
+        fun onWallpaperSelected(wallpaper: Photo){}
     }
 }

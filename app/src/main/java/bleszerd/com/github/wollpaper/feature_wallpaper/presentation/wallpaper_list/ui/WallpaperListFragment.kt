@@ -8,10 +8,11 @@ import android.widget.EditText
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import bleszerd.com.github.wollpaper.R
 import bleszerd.com.github.wollpaper.databinding.FragmentWallpaperListBinding
+import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,6 +38,15 @@ class WallpaperListFragment : Fragment() {
                 viewModel.searchPaginatedWallpaperByKeyword()
             }
         }
+
+    private val wallpaperListListener = object : WallpaperListAdapter.WallpaperListAdapterListener {
+        override fun onWallpaperSelected(wallpaper: Photo) {
+            val action =
+                WallpaperListFragmentDirections
+                    .actionWallpaperListFragmentToWallpaperDetailsFragment(wallpaper.id)
+            findNavController().navigate(action)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,6 +81,7 @@ class WallpaperListFragment : Fragment() {
             layoutManager = gridLayoutManager
         }
 
+        wallpaperAdapter.setListener(wallpaperListListener)
         nestedScrollView.setOnScrollChangeListener(wallpaperListScrollListener)
     }
 

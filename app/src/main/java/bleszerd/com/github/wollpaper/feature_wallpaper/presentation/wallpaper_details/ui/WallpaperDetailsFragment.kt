@@ -1,14 +1,101 @@
 package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_details.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import bleszerd.com.github.wollpaper.databinding.FragmentWallpaperDetailsBinding
+import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
+import coil.ImageLoader
+import coil.load
+import coil.request.ImageRequest
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class WallpaperDetailsFragment : Fragment() {
+
     private lateinit var binding: FragmentWallpaperDetailsBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private lateinit var backgroundImage: ImageView
+    private lateinit var progressIcon: ProgressBar
+    private lateinit var photoId: String
+    private lateinit var authorName: TextView
+    private lateinit var imageRequest: ImageLoader
+
+    private val viewModel: WallpaperDetailsViewModel by viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentWallpaperDetailsBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupPhotoRequest()
+        setupViewReferences()
+        getArgumentsFromNav()
+        populateViewData(photoId)
+        setupObservers()
+    }
+
+    private fun setupPhotoRequest() {
+        imageRequest = ImageLoader(requireContext())
+    }
+
+    private fun setupViewReferences() {
+        backgroundImage = binding.wallpaperDetailsBackgroundImage
+        progressIcon = binding.wallpaperDetailsProgress
+    }
+
+    private fun getArgumentsFromNav() {
+        val argsBundle = requireArguments()
+        val args = WallpaperDetailsFragmentArgs.fromBundle(argsBundle)
+        photoId = args.photoId
+    }
+
+    private fun populateViewData(photoId: String) {
+        viewModel.getWallpaperById(photoId)
+    }
+
+    private fun setupObservers() {
+        viewModel.photoData.observe(viewLifecycleOwner, { photo ->
+            if (photo == null)
+                return@observe
+
+            updateViewData(photo)
+        })
+    }
+
+    private fun updateViewData(photo: Photo) {
+        //Prepare image request with coil
+        val request = ImageRequest.Builder(requireContext())
+            .data(photo.imageUrl)
+            .crossfade(true)
+            .target {
+                backgroundImage.setImageDrawable(it)
+                progressIcon.visibility = View.GONE
+            }
+            .build()
+
+        //Update image
+        CoroutineScope(Dispatchers.Main).launch {
+            imageRequest.execute(request)
+        }
+
+        //Update texts
+        binding.wallpaperDetailsAuthorName.text = photo.photographer
     }
 }
