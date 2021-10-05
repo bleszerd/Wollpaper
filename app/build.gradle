@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id "com.google.android.libraries.mapsplatform.secrets-gradle-plugin"
+    id "androidx.navigation.safeargs.kotlin"
 }
 
 android {
@@ -69,4 +70,8 @@ dependencies {
 
     //Coil
     implementation "io.coil-kt:coil:1.3.2"
+
+    //Jetpack Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.4.0-alpha10"
+    implementation "androidx.navigation:navigation-ui-ktx:2.4.0-alpha10"
 }

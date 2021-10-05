@@ -1,20 +1,23 @@
-package bleszerd.com.github.wollpaper.feature_wallpaper.wallpaper_list.ui
+package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import bleszerd.com.github.wollpaper.databinding.ActivityWallpaperListBinding
+import bleszerd.com.github.wollpaper.databinding.FragmentWallpaperListBinding
+import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class WallpaperListActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityWallpaperListBinding
+class WallpaperListFragment : Fragment() {
+    private lateinit var binding: FragmentWallpaperListBinding
 
     private lateinit var wallpaperAdapter: WallpaperListAdapter
     private lateinit var recyclerWallpaper: RecyclerView
@@ -31,15 +34,31 @@ class WallpaperListActivity : AppCompatActivity() {
             val parentHeight = nestedScrollView.measuredHeight
             val maxScrollValue = (parentHeight - childHeight) * -1
 
-            if (maxScrollValue == scrollY){
+            if (maxScrollValue == scrollY) {
                 viewModel.searchPaginatedWallpaperByKeyword()
             }
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityWallpaperListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private val wallpaperListListener = object : WallpaperListAdapter.WallpaperListAdapterListener {
+        override fun onWallpaperSelected(wallpaper: Photo) {
+            val action =
+                WallpaperListFragmentDirections
+                    .actionWallpaperListFragmentToWallpaperDetailsFragment(wallpaper.id)
+            findNavController().navigate(action)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentWallpaperListBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupViewReferences()
         setupRecyclerWallpaper()
@@ -54,14 +73,15 @@ class WallpaperListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerWallpaper() {
-        wallpaperAdapter = WallpaperListAdapter(this)
-        gridLayoutManager = GridLayoutManager(this@WallpaperListActivity, 2)
+        wallpaperAdapter = WallpaperListAdapter(requireActivity())
+        gridLayoutManager = GridLayoutManager(requireContext(), 2)
 
         recyclerWallpaper.apply {
             adapter = wallpaperAdapter
             layoutManager = gridLayoutManager
         }
 
+        wallpaperAdapter.setListener(wallpaperListListener)
         nestedScrollView.setOnScrollChangeListener(wallpaperListScrollListener)
     }
 
@@ -76,10 +96,10 @@ class WallpaperListActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.wallpaperList.observe(this, { photoList ->
+        viewModel.wallpaperList.observe(viewLifecycleOwner, { photoList ->
             if (photoList == null) return@observe
 
-            if (photoList.size == 0){
+            if (photoList.size == 0) {
                 wallpaperAdapter.clearAllData()
                 return@observe
             }
@@ -87,9 +107,8 @@ class WallpaperListActivity : AppCompatActivity() {
             wallpaperAdapter.insertItems(photoList)
         })
 
-
-        viewModel.hasMoreWallpapers.observe(this, { hasMore ->
-            if(!hasMore)
+        viewModel.hasMoreWallpapers.observe(viewLifecycleOwner, { hasMore ->
+            if (!hasMore)
                 binding.progressWallpaperListHasMoreWallpaper.visibility = View.GONE
         })
     }

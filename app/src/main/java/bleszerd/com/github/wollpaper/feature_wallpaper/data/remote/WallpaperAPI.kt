@@ -12,7 +12,7 @@ import retrofit2.http.Query
 
 interface WallpaperAPI {
 
-    @GET("search") //?query=forest
+    @GET("search")
     suspend fun searchWallpapersByKeyword(
         @Query("query") query: String,
         @Query("page") page: Int,

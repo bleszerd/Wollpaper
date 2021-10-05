@@ -1,4 +1,4 @@
-package bleszerd.com.github.wollpaper.feature_wallpaper.wallpaper_list.ui
+package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -11,8 +11,6 @@ import bleszerd.com.github.wollpaper.R
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import coil.ImageLoader
 import coil.request.ImageRequest
-import coil.transform.RoundedCornersTransformation
-import coil.transform.Transformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +19,7 @@ class WallpaperListAdapter(
     private val context: Activity
 ) : RecyclerView.Adapter<WallpaperListAdapter.WallpaperListViewHolder>() {
 
+    private lateinit var adapterListener: WallpaperListAdapterListener
     private val _photoList = mutableListOf<Photo>()
     private val imageRequest = ImageLoader(context)
 
@@ -58,7 +57,17 @@ class WallpaperListAdapter(
             CoroutineScope(Dispatchers.Main).launch {
                 imageRequest.execute(request)
             }
+
+            //Set listeners
+            if (::adapterListener.isInitialized)
+                itemView.setOnClickListener {
+                    adapterListener.onWallpaperSelected(photo)
+                }
         }
+    }
+
+    fun setListener(listener: WallpaperListAdapterListener) {
+        adapterListener = listener
     }
 
     fun insertItems(photos: List<Photo>) {
@@ -71,5 +80,9 @@ class WallpaperListAdapter(
     fun clearAllData() {
         _photoList.clear()
         notifyDataSetChanged()
+    }
+
+    interface WallpaperListAdapterListener {
+        fun onWallpaperSelected(wallpaper: Photo){}
     }
 }

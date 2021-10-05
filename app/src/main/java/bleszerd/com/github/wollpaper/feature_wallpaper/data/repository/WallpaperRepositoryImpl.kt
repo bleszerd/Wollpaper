@@ -1,4 +1,4 @@
-package bleszerd.com.github.wollpaper.feature_wallpaper.repository
+package bleszerd.com.github.wollpaper.feature_wallpaper.data.repository
 
 import bleszerd.com.github.wollpaper.core.Resource
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.remote.WallpaperAPI

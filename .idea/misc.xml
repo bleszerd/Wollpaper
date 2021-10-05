@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/drawable/wallpaper_card_item_background.xml" value="0.22685185185185186" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2758152173913043" />
         <entry key="app/src/main/res/layout/activity_wallpaper_list.xml" value="0.24351050679851668" />
+        <entry key="app/src/main/res/layout/fragment_wallpaper_list.xml" value="0.278125" />
         <entry key="app/src/main/res/layout/wallpaper_card_item.xml" value="0.2778561354019746" />
         <entry key="app/src/main/res/layout/wallpaper_card_item_placeholder.xml" value="0.2477355072463768" />
       </map>

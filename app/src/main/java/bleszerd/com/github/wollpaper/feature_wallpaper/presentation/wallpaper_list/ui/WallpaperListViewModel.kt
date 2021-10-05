@@ -1,4 +1,4 @@
-package bleszerd.com.github.wollpaper.feature_wallpaper.wallpaper_list.ui
+package bleszerd.com.github.wollpaper.feature_wallpaper.presentation.wallpaper_list.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,14 +7,14 @@ import bleszerd.com.github.wollpaper.core.Constants.RESULTS_LIMIT_PER_PAGE
 import bleszerd.com.github.wollpaper.core.Resource
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import bleszerd.com.github.wollpaper.feature_wallpaper.use_case.SearchWallpaperByKeywordListener
-import bleszerd.com.github.wollpaper.feature_wallpaper.use_case.util.NestedUseCases
+import bleszerd.com.github.wollpaper.feature_wallpaper.use_case.util.NestedWallpaperUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WallpaperListViewModel @Inject constructor(
-    private val nestedUseCases: NestedUseCases
+    private val nestedWallpaperUseCases: NestedWallpaperUseCases
 ) : ViewModel() {
 
     val wallpaperList = MutableLiveData<MutableList<Photo>>(null)
@@ -38,7 +38,7 @@ class WallpaperListViewModel @Inject constructor(
 
     fun searchPaginatedWallpaperByKeyword(keyword: String? = null) {
         viewModelScope.launch {
-            nestedUseCases.searchWallpapersByKeyword(
+            nestedWallpaperUseCases.searchWallpapersByKeyword(
                 keyword,
                 RESULTS_LIMIT_PER_PAGE,
                 onEndReached = endIsReachedCallback,
@@ -46,13 +46,13 @@ class WallpaperListViewModel @Inject constructor(
             ) { result ->
                 when (result) {
                     is Resource.Success -> {
-                        //Update list
                         wallpaperList.postValue(result.data?.photos!!.toMutableList())
                     }
                     is Resource.Error -> {
                         println(result.message)
                     }
                     is Resource.Loading -> {
+
                     }
                 }
             }
