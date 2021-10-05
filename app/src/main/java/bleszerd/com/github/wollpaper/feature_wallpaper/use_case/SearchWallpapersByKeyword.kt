@@ -1,6 +1,7 @@
 package bleszerd.com.github.wollpaper.feature_wallpaper.use_case
 
 import bleszerd.com.github.wollpaper.core.Constants.DEFAULT_SEARCH_KEYWORD
+import bleszerd.com.github.wollpaper.core.Constants.RESULTS_LIMIT_PER_PAGE
 import bleszerd.com.github.wollpaper.core.Resource
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.Photo
 import bleszerd.com.github.wollpaper.feature_wallpaper.data.model.PhotoList
@@ -30,20 +31,19 @@ class SearchWallpapersByKeyword @Inject constructor(
             return
 
         //Update last search keyword
-        val searchKeyword = keyword?: lastSearchedKeyword
+        val searchKeyword = keyword ?: lastSearchedKeyword
 
         //If search keyword is the same as previous update page count
-        if (lastSearchedKeyword == searchKeyword){
+        if (lastSearchedKeyword == searchKeyword) {
 
             //Check if end of list is reached
-            if (endReached){
+            if (endReached) {
                 onEndReached()
                 return
             }
 
             currentPage += 1
-        }
-        else {
+        } else {
             //Keyword is different, reset page count and update lastSearchKeyword
             currentPage = 1
             lastSearchedKeyword = searchKeyword
@@ -63,7 +63,8 @@ class SearchWallpapersByKeyword @Inject constructor(
             totalResults = response.data?.totalResults!!
 
             //If current page * limit is greater than total results the end has reached
-            endReached = currentPage * limit > totalResults
+            endReached =
+                currentPage * limit > totalResults || totalResults <= RESULTS_LIMIT_PER_PAGE
 
             //Parse photo list response to photo list data model
             val parsedPhotos = parsePhotoListResponseToPhotoListModel(response.data)
@@ -73,6 +74,8 @@ class SearchWallpapersByKeyword @Inject constructor(
                     PhotoList(parsedPhotos, totalResults)
                 )
             )
+
+            if (endReached) onEndReached()
         } catch (e: Exception) {
             onResult(
                 Resource.Error(message = "Unknown error occurred.")
@@ -107,5 +110,5 @@ class SearchWallpapersByKeyword @Inject constructor(
 }
 
 interface SearchWallpaperByKeywordListener {
-    fun onNewKeywordSearch(newKeyword: String){}
+    fun onNewKeywordSearch(newKeyword: String) {}
 }

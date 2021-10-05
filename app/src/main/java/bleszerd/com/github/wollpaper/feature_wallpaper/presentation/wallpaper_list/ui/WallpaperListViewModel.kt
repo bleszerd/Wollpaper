@@ -46,7 +46,6 @@ class WallpaperListViewModel @Inject constructor(
             ) { result ->
                 when (result) {
                     is Resource.Success -> {
-                        //Update list
                         wallpaperList.postValue(result.data?.photos!!.toMutableList())
                     }
                     is Resource.Error -> {

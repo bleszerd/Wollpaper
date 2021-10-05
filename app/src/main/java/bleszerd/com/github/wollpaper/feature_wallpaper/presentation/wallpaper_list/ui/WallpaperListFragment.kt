@@ -107,7 +107,6 @@ class WallpaperListFragment : Fragment() {
             wallpaperAdapter.insertItems(photoList)
         })
 
-
         viewModel.hasMoreWallpapers.observe(viewLifecycleOwner, { hasMore ->
             if (!hasMore)
                 binding.progressWallpaperListHasMoreWallpaper.visibility = View.GONE

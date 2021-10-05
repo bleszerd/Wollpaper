@@ -79,7 +79,9 @@
                     style="@style/Input"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:imeOptions="actionGo"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
                     android:layout_marginEnd="110dp"
                     android:hint="@string/keyword"
                     android:textColorHint="@color/plate" />
