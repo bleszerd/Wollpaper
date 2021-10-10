@@ -3,10 +3,10 @@
 Find your new favorite wallpaper that looks just like you.
 
 <p float="left">
-  <img src="https://github.com/bleszerd/Wollpaper/blob/main/.github/wollpaper_device_01.png?raw=true" width="200" />
-  <img src="https://github.com/bleszerd/Wollpaper/blob/main/.github/wollpaper_device_02.png?raw=true" width="200" />
-  <img src="https://github.com/bleszerd/Wollpaper/blob/main/.github/wollpaper_device_03.png?raw=true" width="200" />
-  <img src="https://github.com/bleszerd/Wollpaper/blob/main/.github/wollpaper_device_04.png?raw=true" width="200" />
+  <img src="https://github.com/bleszerd/Wollpaper/blob/main/.github/wollpaper_device_01.png?raw=true" width="180" />
+  <img src="https://github.com/bleszerd/Wollpaper/blob/main/.github/wollpaper_device_02.png?raw=true" width="180" />
+  <img src="https://github.com/bleszerd/Wollpaper/blob/main/.github/wollpaper_device_03.png?raw=true" width="180" />
+  <img src="https://github.com/bleszerd/Wollpaper/blob/main/.github/wollpaper_device_04.png?raw=true" width="180" />
 </p>
 
 # Builds
