@@ -133,7 +133,15 @@ class WallpaperDetailsFragment : Fragment() {
     }
 
     private fun setDeviceWallpaper() {
-       CoroutineScope(Dispatchers.Main)
+        CoroutineScope(Dispatchers.Main).launch {
+            val wallpaperManager = WallpaperManager.getInstance(requireContext())
+
+            try {
+                wallpaperManager.setBitmap(viewModel.photoResource)
+            } catch (e: Exception){
+                println(e.message)
+            }
+        }
     }
 
     private fun openWallpaperOnPexels() {
